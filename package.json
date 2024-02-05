@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "displayName": "Helper",
     "description": "",
-    "unity": "2022.3.10",
+    "unity": "2022.3",
     "keywords": ["unity", "package"],
     "category": "Unity",
     "dependencies": {
@@ -23,7 +23,7 @@
     },
     "homepage": "https://github.com/LUFiAS-69/helper-unity",
     "unityRelease": {
-      "1.0.0": "2022.3.10"
+      "1.0.0": "2022.3"
       
     }
   }
