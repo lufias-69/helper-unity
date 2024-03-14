@@ -1,5 +1,9 @@
 {
     "name": "com.lufias-helper",
-    "version": "0.0.1",
-    "displayName": "Helper Tools"
+    "version": "1.0.1",
+    "displayName": "Helper Tools",
+    "author": {
+        "name": "Saiful Islam",
+        "email": "dev_lufias@icloud.com"
+    }
 }
