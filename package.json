@@ -1,7 +1,13 @@
 {
     "name": "com.lufias-helper",
-    "version": "1.0.1",
     "displayName": "Helper Tools",
+    "version": "1.0.2",
+    "description": "",
+    "documentationUrl": "",
+    "repository": {
+        "url": "https://github.com/LUFiAS-69/helper-unity.git",
+        "type": "git"
+    },
     "author": {
         "name": "Saiful Islam",
         "email": "dev_lufias@icloud.com"
