@@ -1,8 +1,5 @@
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
 using UnityEngine;
-
 
 [System.AttributeUsage(System.AttributeTargets.Field)]
 public class ShowIfAttribute : PropertyAttribute
@@ -12,25 +9,25 @@ public class ShowIfAttribute : PropertyAttribute
         Boolean,
         Integer,
         Float,
-        Enum        
+        Enum
     }
 
     public string fieldName;
     public ConditionType conditionType;
-    public object conditionValue;
+    public object[] conditionValues;
 
     public ShowIfAttribute(string boolVariableName)
     {
         fieldName = boolVariableName;
         conditionType = ConditionType.Boolean;
-        conditionValue = true;
+        conditionValues = new object[] { true };
     }
 
-    public ShowIfAttribute(string fieldName, ConditionType conditionType, object conditionValue)
+    public ShowIfAttribute(string fieldName, ConditionType conditionType, params object[] conditionValues)
     {
         this.fieldName = fieldName;
         this.conditionType = conditionType;
-        this.conditionValue = conditionValue;
+        this.conditionValues = conditionValues;
     }
 }
 
@@ -49,7 +46,7 @@ public class ShowIfDrawer : PropertyDrawer
             return;
         }
 
-        bool showProperty = CheckCondition(conditionProperty, showIf.conditionType, showIf.conditionValue);
+        bool showProperty = CheckCondition(conditionProperty, showIf.conditionType, showIf.conditionValues);
 
         if (showProperty)
         {
@@ -62,7 +59,7 @@ public class ShowIfDrawer : PropertyDrawer
         ShowIfAttribute showIf = attribute as ShowIfAttribute;
         SerializedProperty conditionProperty = property.serializedObject.FindProperty(showIf.fieldName);
 
-        if (conditionProperty == null || CheckCondition(conditionProperty, showIf.conditionType, showIf.conditionValue))
+        if (conditionProperty == null || CheckCondition(conditionProperty, showIf.conditionType, showIf.conditionValues))
         {
             return EditorGUI.GetPropertyHeight(property, label);
         }
@@ -72,18 +69,38 @@ public class ShowIfDrawer : PropertyDrawer
         }
     }
 
-    bool CheckCondition(SerializedProperty conditionProperty, ShowIfAttribute.ConditionType conditionType, object conditionValue)
+    bool CheckCondition(SerializedProperty conditionProperty, ShowIfAttribute.ConditionType conditionType, object[] conditionValues)
     {
         switch (conditionType)
         {
             case ShowIfAttribute.ConditionType.Boolean:
-                return conditionProperty.boolValue == (bool)conditionValue;
+                foreach (object value in conditionValues)
+                {
+                    if (conditionProperty.boolValue == (bool)value)
+                        return true;
+                }
+                return false;
             case ShowIfAttribute.ConditionType.Integer:
-                return conditionProperty.intValue == (int)conditionValue;
+                foreach (object value in conditionValues)
+                {
+                    if (conditionProperty.intValue == (int)value)
+                        return true;
+                }
+                return false;
             case ShowIfAttribute.ConditionType.Float:
-                return conditionProperty.floatValue == (float)conditionValue;
+                foreach (object value in conditionValues)
+                {
+                    if (conditionProperty.floatValue == (float)value)
+                        return true;
+                }
+                return false;
             case ShowIfAttribute.ConditionType.Enum:
-                return conditionProperty.enumValueIndex == (int)conditionValue;            
+                foreach (object value in conditionValues)
+                {
+                    if (conditionProperty.enumValueIndex == (int)value)
+                        return true;
+                }
+                return false;
             default:
                 return false;
         }
