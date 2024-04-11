@@ -41,7 +41,7 @@ namespace Helper
 
         static void InstallUnityPackage(string packageName)
         {
-            UnityEditor.PackageManager.Client.Add($"com.uniity.{packageName}");
+            UnityEditor.PackageManager.Client.Add($"com.unity.{packageName}");
         }
 
         static void InstallThirdPartyPackage(string packageName)
