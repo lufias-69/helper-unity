@@ -17,19 +17,10 @@ namespace Helper.Extension
         {
             for (int i = 0; i < transform.childCount; i++)
             {
-                Object.Destroy(transform.GetChild(i).gameObject);
+                if(Application.isPlaying) Object.Destroy(transform.GetChild(i).gameObject);
+                else Object.DestroyImmediate(transform.GetChild(i).gameObject);
             }
         }
-
-#if UNITY_EDITOR
-        public static void KillAllChildInstantly(this Transform transform)
-        {
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                Object.DestroyImmediate(transform.GetChild(i).gameObject);
-            }
-        }
-#endif
 
         public static List<Transform> GetAllChild(this Transform transform)
         {
