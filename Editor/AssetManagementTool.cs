@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using System.IO;
 using UnityEngine;
@@ -68,3 +69,4 @@ namespace Helper
     }
 
 }
+#endif

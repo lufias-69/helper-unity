@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
@@ -28,5 +29,4 @@ namespace Helper
         }
     }
 }
-
-
+#endif

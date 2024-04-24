@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using System.IO;
 using System.Net.Http;
@@ -51,3 +52,4 @@ namespace Helper
     }
 
 }
+#endif
