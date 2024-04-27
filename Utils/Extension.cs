@@ -104,6 +104,31 @@ namespace Helper.Extension
         }
 
         #endregion
+
+        #region Transform Scale
+
+        public static void SetScaleX(this Transform transform, float x)
+        {
+            transform.localScale = new Vector3(x, transform.localScale.y, transform.localScale.z);
+        }
+
+        public static void SetScaleY(this Transform transform, float y)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, y, transform.localScale.z);
+        }
+
+        public static void SetScaleZ(this Transform transform, float z)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, z);
+        }
+
+        public static void ResetScale(this Transform transform)
+        {
+            transform.localPosition = Vector3.one;
+        }
+
+        #endregion
+
         #endregion
     }
 }
