@@ -9,7 +9,8 @@ namespace Helper.Extension
         public static void ResetTransform(this Transform transform)
         {
             transform.localScale = Vector3.one;
-            transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;            
         }
 
         #region Child
