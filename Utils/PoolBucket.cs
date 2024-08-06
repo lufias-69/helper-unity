@@ -116,6 +116,23 @@ namespace Helper.Pool
             item.gameObject.SetActive(isActive);
             return item;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        public void BackToPool(T item)
+        {
+            if (poolType == PoolType.Queue)
+            {
+                item.gameObject.SetActive(false);
+                prefabQueue.Enqueue(item);
+            }
+            else if (poolType == PoolType.List)
+            {
+                item.gameObject.SetActive(false);
+            }
+        }
     }
 }
 
