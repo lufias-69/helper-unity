@@ -52,20 +52,20 @@ namespace Helper.Extension
             transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, z);
         }
 
-        //public static void SetPosXY(this Transform transform, float x, float y)
-        //{
-        //    transform.position = new Vector3(x,y, transform.position.z);
-        //}
+        public static void SetPosXY(this Transform transform, float x, float y)
+        {
+            transform.position = new Vector3(x, y, transform.position.z);
+        }
 
-        //public static void SetPosXZ(this Transform transform, float x, float z)
-        //{
-        //    transform.position = new Vector3(x, transform.position.y, z);
-        //}
+        public static void SetPosXZ(this Transform transform, float x, float z)
+        {
+            transform.position = new Vector3(x, transform.position.y, z);
+        }
 
-        //public static void SetPosYZ(this Transform transform, float y, float z)
-        //{
-        //    transform.position = new Vector3(transform.position.x, y, z);
-        //}
+        public static void SetPosYZ(this Transform transform, float y, float z)
+        {
+            transform.position = new Vector3(transform.position.x, y, z);
+        }
 
         public static void ResetPos(this Transform transform)
         {

@@ -19,6 +19,9 @@ namespace Helper
         [MenuItem("Helper/Package/New Input System")]
         static void AddNewInputSystem() => InstallUnityPackage("inputsystem");
 
+        [MenuItem("Helper/Package/2D Sprite")]
+        static void Add2dSprite() => InstallUnityPackage("2d.sprite");
+
 
 
 

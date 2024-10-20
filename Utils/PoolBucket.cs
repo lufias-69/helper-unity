@@ -1,36 +1,28 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Helper.Pool
 {
     public class PoolBucket<T> where T : Component
     {
-        public enum PoolType { List, Queue }
+        readonly string itemName;
+        readonly T prefab;
+        readonly int amount;
 
-        string itemName;
-        T prefab;
-        int amount;
-        PoolType poolType;
-
-        List<T> prefabList;
-        Queue<T> prefabQueue;
+        int index;
+        T[] prefabList;
         Transform parent;
 
         /// <summary>
         /// You cannot use gameobject type, use transform instead.
-        /// PoolType.List will generate new prefab if existing ones are already in use.
-        /// PoolType.Queue will return the first prefab even if it was in use.        
         /// </summary>
         /// <param name="_name">pool will keep the items in a parent named this name</param>
         /// <param name="_prefab">the item you want to reuse</param>
         /// <param name="_amount">initial amount to be generated</param>
-        /// <param name="_poolType">how should this pool behave</param>
-        public PoolBucket(string _name, T _prefab, int _amount, PoolType _poolType)
+        public PoolBucket(string _name, T _prefab, int _amount)
         {
             itemName = _name;
             prefab = _prefab;
             amount = _amount;
-            poolType = _poolType;
             GeneratePool();
         }
 
@@ -38,17 +30,15 @@ namespace Helper.Pool
         {
             parent = new GameObject(itemName).transform;
 
-            if (poolType == PoolType.List) prefabList = new List<T>(amount);
-            else prefabQueue = new Queue<T>(amount);
-
+            prefabList = new T[amount];
+            
             for (int i = 0; i < amount; i++)
             {
                 T g = Object.Instantiate(prefab);
                 g.gameObject.SetActive(false);
                 g.transform.SetParent(parent);
 
-                if (poolType == PoolType.List) prefabList.Add(g);
-                else prefabQueue.Enqueue(g);
+                prefabList[i] = g;
             }
         }
 
@@ -58,25 +48,9 @@ namespace Helper.Pool
         /// <returns></returns>
         public T GetItem()
         {
-            if (poolType == PoolType.Queue)
-            {
-                return prefabQueue.Dequeue();
-            }
-            else
-            {
-                foreach (T item in prefabList)
-                {
-                    if (!item.gameObject.activeInHierarchy)
-                    {
-                        item.gameObject.SetActive(true);
-                        return item;
-                    }
-                }
-                T g = MonoBehaviour.Instantiate(prefab);
-                g.transform.SetParent(parent);
-                prefabList.Add(g);
-                return g;
-            }
+            index = (index + 1) % prefabList.Length;
+            prefabList[index].gameObject.SetActive(true);
+            return prefabList[index];
         }
 
         /// <summary>
@@ -116,23 +90,6 @@ namespace Helper.Pool
             item.gameObject.SetActive(isActive);
             return item;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="item"></param>
-        public void BackToPool(T item)
-        {
-            if (poolType == PoolType.Queue)
-            {
-                item.gameObject.SetActive(false);
-                prefabQueue.Enqueue(item);
-            }
-            else if (poolType == PoolType.List)
-            {
-                item.gameObject.SetActive(false);
-            }
-        }
     }
 }
 
@@ -150,7 +107,7 @@ public class Demo : MonoBehaviour
     private void Start()
     {
         //setup the pool
-        bulletPool = new Helper.Pool.PoolBucket<ParticleSystem>("bullet", bulletPrefab, 10, Helper.Pool.PoolBucket<ParticleSystem>.PoolType.Queue);
+        bulletPool = new Helper.Pool.PoolBucket<ParticleSystem>("bullet", bulletPrefab, 10);
     }
 
     void GetBullet()
@@ -165,14 +122,6 @@ public class Demo : MonoBehaviour
         ParticleSystem _b3 = bulletPool.GetItem(Vector3.zero, true);        
     }
 
-    void DestoryBullet(GameObject bullet)
-    {
-        //usual way [not recomended]
-        Destroy(bullet);
-
-        //optimised way
-        bullet.SetActive(false);
-    }
 }
 */
 #endregion
