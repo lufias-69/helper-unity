@@ -22,7 +22,8 @@ namespace Helper
         [MenuItem("Helper/Package/2D Sprite")]
         static void Add2dSprite() => InstallUnityPackage("2d.sprite");
 
-
+        [MenuItem("Helper/Package/Newtonsoft Json")]
+        static void AddNewtonsoftJson() => InstallUnityPackage("nuget.newtonsoft-json");
 
 
 
