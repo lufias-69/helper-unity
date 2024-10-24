@@ -2,16 +2,16 @@ using UnityEngine;
 
 namespace Helper.Tween
 {
-    public class TweenRunner : MonoBehaviour
+    internal class TweenRunner : MonoBehaviour
     {
         private static TweenRunner _instance;
-        public static TweenRunner Instance
+        internal static TweenRunner Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    GameObject obj = new GameObject("SimpleTweenRunner");
+                    GameObject obj = new GameObject("TweenRunner");
                     _instance = obj.AddComponent<TweenRunner>();
                     DontDestroyOnLoad(obj);
                 }

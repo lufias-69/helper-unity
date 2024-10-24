@@ -5,7 +5,7 @@ using System;
 namespace Helper.Tween
 {
     #region Core
-    public enum TweenType
+    internal enum TweenType
     {
         Vector3, Vector2, Float, Color, Shake, Punch
     }
@@ -42,7 +42,7 @@ namespace Helper.Tween
         private Vector3 axis;
 
         // Constructor for Shake Effect
-        public Tween(Func<Vector3> getValue, Action<Vector3> setValue, Vector3 axisToImpact, float duration, float power, float speed)
+        internal Tween(Func<Vector3> getValue, Action<Vector3> setValue, Vector3 axisToImpact, float duration, float power, float speed)
         {
             this.getVector3Value = getValue;
             this.setVector3Value = setValue;
@@ -56,7 +56,7 @@ namespace Helper.Tween
         }
 
         // Constructor for Punch Effect
-        public Tween(Func<Vector3> getValue, Action<Vector3> setValue, float duration, Vector3 punchAmount)
+        internal Tween(Func<Vector3> getValue, Action<Vector3> setValue, float duration, Vector3 punchAmount)
         {
             this.getVector3Value = getValue;
             this.setVector3Value = setValue;
@@ -68,7 +68,7 @@ namespace Helper.Tween
         }
 
         // Constructor for float values (like alpha)
-        public Tween(Func<float> getValue, Action<float> setValue, float endValue, float duration)
+        internal Tween(Func<float> getValue, Action<float> setValue, float endValue, float duration)
         {
             this.getFloatValue = getValue;
             this.setFloatValue = setValue;
@@ -80,7 +80,7 @@ namespace Helper.Tween
         }
 
         // Constructor for Vector3 values (like position, rotation, scale)
-        public Tween(Func<Vector3> getValue, Action<Vector3> setValue, Vector3 endValue, float duration, TweenType tweenType)
+        internal Tween(Func<Vector3> getValue, Action<Vector3> setValue, Vector3 endValue, float duration, TweenType tweenType)
         {
             this.getVector3Value = getValue;
             this.setVector3Value = setValue;
@@ -92,7 +92,7 @@ namespace Helper.Tween
         }
 
         // Constructor for Vector2 values (like anchoredPosition)
-        public Tween(Func<Vector2> getValue, Action<Vector2> setValue, Vector2 endValue, float duration)
+        internal Tween(Func<Vector2> getValue, Action<Vector2> setValue, Vector2 endValue, float duration)
         {
             this.getVector2Value = getValue;
             this.setVector2Value = setValue;
@@ -104,7 +104,7 @@ namespace Helper.Tween
         }
 
         // Constructor for Color values (like Image color)
-        public Tween(Func<Color> getValue, Action<Color> setValue, Color endValue, float duration)
+        internal Tween(Func<Color> getValue, Action<Color> setValue, Color endValue, float duration)
         {
             this.getColorValue = getValue;
             this.setColorValue = setValue;
@@ -117,24 +117,42 @@ namespace Helper.Tween
 
         public bool IsPlaying => isPlaying;
 
+        /// <summary>
+        /// Sets the delay before the tween starts.
+        /// </summary>
+        /// <param name="delay">The delay in seconds.</param>
+        /// <returns>The current Tween instance.</returns>
         public Tween SetDelay(float delay)
         {
             this.delay = delay;
             return this;
         }
 
+        /// <summary>
+        /// Sets the easing function for the tween.
+        /// </summary>
+        /// <param name="ease">The easing function to use.</param>
+        /// <returns>The current Tween instance.</returns>
         public Tween SetEase(EaseType ease)
         {
             this.easeType = ease;
             return this;
         }
 
+        /// <summary>
+        /// Sets the action to be called when the tween completes.
+        /// </summary>
+        /// <param name="onComplete">The action to call on completion.</param>
+        /// <returns>The current Tween instance.</returns>
         public Tween OnComplete(Action onComplete)
         {
             this.onComplete = onComplete;
             return this;
         }
 
+        /// <summary>
+        /// Kills the tween if it is currently playing.
+        /// </summary>
         public void Kill()
         {
             if (coroutine != null)
@@ -147,7 +165,7 @@ namespace Helper.Tween
             }
         }
 
-        public void Start()
+        internal void Start()
         {
             isPlaying = true;
             coroutine = TweenRunner.Instance.StartCoroutine(Execute());
@@ -244,6 +262,14 @@ namespace Helper.Tween
     #region Virtual
     public static class DoVirtual
     {
+        /// <summary>
+        /// Creates a virtual tween for float values.
+        /// </summary>
+        /// <param name="start">The starting value of the tween.</param>
+        /// <param name="end">The ending value of the tween.</param>
+        /// <param name="duration">The duration of the tween in seconds.</param>
+        /// <param name="onUpdate">The action to call on each update with the current tween value.</param>
+        /// <returns>The created VirtualTween instance.</returns>
         public static VirtualTween Float(float start, float end, float duration, Action<float> onUpdate)
         {
             VirtualTween tween = new VirtualTween(start, end, duration, onUpdate);
@@ -260,7 +286,7 @@ namespace Helper.Tween
         private Action<float> onUpdate;
         private Action onComplete;
 
-        public VirtualTween(float start, float end, float duration, Action<float> onUpdate)
+        internal VirtualTween(float start, float end, float duration, Action<float> onUpdate)
         {
             this.startValue = start;
             this.endValue = end;
@@ -268,13 +294,18 @@ namespace Helper.Tween
             this.onUpdate = onUpdate;
         }
 
+        /// <summary>
+        /// Sets the action to be called when the virtual tween completes.
+        /// </summary>
+        /// <param name="onComplete">The action to call on completion.</param>
+        /// <returns>The current VirtualTween instance.</returns>
         public VirtualTween OnComplete(Action onComplete)
         {
             this.onComplete = onComplete;
             return this;
         }
 
-        public void Start()
+        internal void Start()
         {
             TweenRunner.Instance.StartCoroutine(Execute());
         }
@@ -322,7 +353,7 @@ namespace Helper.Tween
 
         private Action onComplete;
 
-        public ButtonTween(Func<Vector2> getValue, Action<Vector2> setValue, float duration, float size)
+        internal ButtonTween(Func<Vector2> getValue, Action<Vector2> setValue, float duration, float size)
         {
             this.startValue = getValue();
             this.getValue = getValue;
@@ -337,7 +368,7 @@ namespace Helper.Tween
             return this;
         }
 
-        public void Start()
+        internal void Start()
         {
             if (isPlaying) return;
 
@@ -372,73 +403,7 @@ namespace Helper.Tween
         }
     }
 
-    public class TweenEffects
-    {
-        private Coroutine coroutine;
-        private bool isPlaying = false;
-
-        private Func<Vector3> getVector3Value;
-        private Action<Vector3> setVector3Value;
-        public float duration;
-        public float intensity;
-        public float speed;
-        private float delay;
-        private EaseType easeType;
-        private Action onComplete;
-        private Vector3 startVector3;
-
-        public TweenEffects(Func<Vector3> getValue, Action<Vector3> setValue, Vector3 originalValue, float duration, float intensity, float speed)
-        {
-            this.getVector3Value = getValue;
-            this.setVector3Value = setValue;
-            this.duration = duration;
-            this.speed = speed;
-            this.intensity = intensity;
-            this.startVector3 = originalValue;
-            this.easeType = EaseType.Linear;
-        }
-
-        public bool IsPlaying => isPlaying;
-
-        public void Start()
-        {
-            isPlaying = true;
-            coroutine = TweenRunner.Instance.StartCoroutine(Execute());
-        }
-
-        private IEnumerator Execute()
-        {
-            yield return new WaitForEndOfFrame();
-
-            if (delay > 0f)
-                yield return new WaitForSeconds(delay);
-
-            float time = 0f;
-            Func<float, float> easeFunction = EasePresets.GetEaseFunction(easeType);
-
-            while (time < duration)
-            {
-                float t = time / duration;
-                float easedT = easeFunction(t);
-
-                // Use simple sine/cosine for shake effect
-                float shakeX = Mathf.Sin(time * speed) * intensity * easedT;
-                float shakeY = Mathf.Cos(time * speed) * intensity * easedT;
-
-                Vector3 offset = new Vector3(shakeX, shakeY, 0);
-                setVector3Value(startVector3 + offset);
-
-                time += Time.deltaTime;
-                yield return null;
-            }
-
-            // Reset position back to original value
-            setVector3Value(startVector3);
-            isPlaying = false;
-
-            onComplete?.Invoke();
-        }
-    }
+    
     #endregion
 
     #region Ease
@@ -451,9 +416,9 @@ namespace Helper.Tween
         Bounce
     }
 
-    public static class EasePresets
+    internal static class EasePresets
     {
-        public static Func<float, float> GetEaseFunction(EaseType easeType)
+        internal static Func<float, float> GetEaseFunction(EaseType easeType)
         {
             switch (easeType)
             {
