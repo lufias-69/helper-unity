@@ -25,9 +25,18 @@ namespace Helper
         [MenuItem("Helper/Package/Newtonsoft Json")]
         static void AddNewtonsoftJson() => InstallUnityPackage("nuget.newtonsoft-json");
 
+        [MenuItem("Helper/Package/TextMeshPro")]
+        static void AddTextMeshPro() => InstallUnityPackage("textmeshpro");
+        
+        [MenuItem("Helper/Package/Physics")]
+        static void AddPhysics() => InstallUnityPackage("physics");
+        
+        [MenuItem("Helper/Package/Physics 2D")]
+        static void AddPhysics2D() => InstallUnityPackage("physics2d");
 
 
-        static string GetGistUrl(string id, string user = "LUFiAS-69") => $"https://gist.github.com/{user}/{id}/raw";
+
+        static string GetGistUrl(string id, string user = "lufias-69") => $"https://gist.github.com/{user}/{id}/raw";
 
         static async Task<string> GetContents(string url)
         {
