@@ -196,22 +196,27 @@ namespace Helper.Tween
                 switch (type)
                 {
                     case TweenType.Float:
+                        if (setFloatValue == null) break;
                         setFloatValue(Mathf.Lerp(startValue, endValue, easedT));
                         break;
 
                     case TweenType.Vector3:
+                        if (setVector3Value == null) break;
                         setVector3Value(Vector3.Lerp(startVector3, endVector3, easedT));
                         break;
 
                     case TweenType.Vector2:
+                        if (setVector2Value == null) break;
                         setVector2Value(Vector2.Lerp(startVector2, endVector2, easedT));
                         break;
 
                     case TweenType.Color:
+                        if (setColorValue == null) break;
                         setColorValue(Color.Lerp(startColor, endColor, easedT));
                         break;
 
                     case TweenType.Shake:
+                        if (setVector3Value == null) break;
                         valT = Mathf.Sin(time * speed) * power * easedT;
                         shakeX = axis.x == 0 ? startVector3.x : valT;
                         shakeY = axis.y == 0 ? startVector3.y : valT;
@@ -221,6 +226,7 @@ namespace Helper.Tween
                         break;
 
                     case TweenType.Punch:
+                        if (setVector3Value == null) break;
                         valT = Mathf.Sin(t * Mathf.PI) * (1 - t);
                         offset = axis * valT;
 
@@ -234,21 +240,27 @@ namespace Helper.Tween
             switch (type)
             {
                 case TweenType.Float:
+                    if (setFloatValue == null) break;
                     setFloatValue(endValue);
                     break;
                 case TweenType.Vector3:
+                    if (setVector3Value == null) break;
                     setVector3Value(endVector3);
                     break;
                 case TweenType.Vector2:
+                    if (setVector2Value == null) break;
                     setVector2Value(endVector2);
                     break;
                 case TweenType.Color:
+                    if (setColorValue == null) break;
                     setColorValue(endColor);
                     break;
                 case TweenType.Shake:
+                    if (setVector3Value == null) break;
                     setVector3Value(startVector3);
                     break;
                 case TweenType.Punch:
+                    if (setVector3Value == null) break;
                     setVector3Value(startVector3);
                     break;
             }
@@ -392,12 +404,12 @@ namespace Helper.Tween
 
                 offset = (1 - t) * Mathf.Sin(t * Mathf.PI) * size * Vector2.one;
 
-                setValue(startValue + offset);
+                setValue?.Invoke(startValue + offset);
 
                 yield return null;
             }
 
-            setValue(startValue);
+            setValue?.Invoke(startValue);
             isPlaying = false;
             onComplete?.Invoke();
         }
