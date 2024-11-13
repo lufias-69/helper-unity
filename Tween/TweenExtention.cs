@@ -306,6 +306,20 @@ namespace Helper.Tween
             return tween;
         }
 
+        /// <summary>
+        /// Tween the fill amount of an Image to the end value over the given duration.
+        /// </summary>
+        /// <param name="target">The target Image</param>
+        /// <param name="endValue">The end fill amount value</param>
+        /// <param name="duration">The duration of the tween</param>
+        /// <returns>The tween object</returns>
+        public static Tween DoFillAmount(this Image target, float endValue, float duration)
+        {
+            Tween tween = new Tween(() => target.fillAmount, value => target.fillAmount = value, endValue, duration);
+            tween.Start();
+            return tween;
+        }
+
         #region Rect Transform
         /// <summary>
         /// Tween the anchored position of a RectTransform to the end value over the given duration.
