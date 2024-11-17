@@ -224,7 +224,7 @@ namespace Helper.Tween
                             shakeY = Mathf.LerpAngle(startVector3.y, endVector3.y, easedT);
                             shakeZ = Mathf.LerpAngle(startVector3.z, endVector3.z, easedT);
 
-                            setVector3Value(Vector3.Lerp(startVector3, endVector3, easedT));
+                            setVector3Value(new Vector3(shakeX, shakeY, shakeZ));
                             break;
                     }
                 }
