@@ -7,7 +7,7 @@ namespace Helper.Tween
     #region Core
     internal enum TweenType
     {
-        Vector3, Vector2, Float, Color, Shake, Punch
+        Vector3, Vector2, Float, Color, Shake, Punch, Rotation
     }
 
     public class Tween
@@ -217,6 +217,14 @@ namespace Helper.Tween
                             offset = axis * valT;
 
                             setVector3Value(startVector3 + offset);
+                            break;
+
+                        case TweenType.Rotation:
+                            shakeX = Mathf.LerpAngle(startVector3.x, endVector3.x, easedT);
+                            shakeY = Mathf.LerpAngle(startVector3.y, endVector3.y, easedT);
+                            shakeZ = Mathf.LerpAngle(startVector3.z, endVector3.z, easedT);
+
+                            setVector3Value(Vector3.Lerp(startVector3, endVector3, easedT));
                             break;
                     }
                 }

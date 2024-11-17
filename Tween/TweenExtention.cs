@@ -145,7 +145,7 @@ namespace Helper.Tween
         /// <returns>The tween object</returns>
         public static Tween DoRotate(this Transform target, Vector3 endValue, float duration)
         {
-            Tween tween = new Tween(() => target.eulerAngles, rot => target.eulerAngles = rot, endValue, duration, TweenType.Vector3);
+            Tween tween = new Tween(() => target.eulerAngles, rot => target.eulerAngles = rot, endValue, duration, TweenType.Rotation);
             tween.Start();
             return tween;
         }
@@ -160,7 +160,7 @@ namespace Helper.Tween
         public static Tween DoRotateX(this Transform target, float endValue, float duration)
         {
             Vector3 _endValue = new Vector3(endValue, target.eulerAngles.y, target.eulerAngles.z);
-            Tween tween = new Tween(() => target.eulerAngles, rot => target.eulerAngles = rot, _endValue, duration, TweenType.Vector3);
+            Tween tween = new Tween(() => target.eulerAngles, rot => target.eulerAngles = rot, _endValue, duration, TweenType.Rotation);
             tween.Start();
             return tween;
         }
@@ -175,7 +175,7 @@ namespace Helper.Tween
         public static Tween DoRotateY(this Transform target, float endValue, float duration)
         {
             Vector3 _endValue = new Vector3(target.eulerAngles.x, endValue, target.eulerAngles.z);
-            Tween tween = new Tween(() => target.eulerAngles, rot => target.eulerAngles = rot, _endValue, duration, TweenType.Vector3);
+            Tween tween = new Tween(() => target.eulerAngles, rot => target.eulerAngles = rot, _endValue, duration, TweenType.Rotation);
             tween.Start();
             return tween;
         }
@@ -190,7 +190,7 @@ namespace Helper.Tween
         public static Tween DoRotateZ(this Transform target, float endValue, float duration)
         {
             Vector3 _endValue = new Vector3(target.eulerAngles.x, target.eulerAngles.y, endValue);
-            Tween tween = new Tween(() => target.eulerAngles, rot => target.eulerAngles = rot, _endValue, duration, TweenType.Vector3);
+            Tween tween = new Tween(() => target.eulerAngles, rot => target.eulerAngles = rot, _endValue, duration, TweenType.Rotation);
             tween.Start();
             return tween;
         }
@@ -206,7 +206,7 @@ namespace Helper.Tween
         /// <returns>The tween object</returns>
         public static Tween DoLocalRotate(this Transform target, Vector3 endValue, float duration)
         {
-            Tween tween = new Tween(() => target.localEulerAngles, rot => target.localEulerAngles = rot, endValue, duration, TweenType.Vector3);
+            Tween tween = new Tween(() => target.localEulerAngles, rot => target.localEulerAngles = rot, endValue, duration, TweenType.Rotation);
             tween.Start();
             return tween;
         }
@@ -221,7 +221,7 @@ namespace Helper.Tween
         public static Tween DoLocalRotateX(this Transform target, float endValue, float duration)
         {
             Vector3 _endValue = new Vector3(endValue, target.localEulerAngles.y, target.localEulerAngles.z);
-            Tween tween = new Tween(() => target.localEulerAngles, rot => target.localEulerAngles = rot, _endValue, duration, TweenType.Vector3);
+            Tween tween = new Tween(() => target.localEulerAngles, rot => target.localEulerAngles = rot, _endValue, duration, TweenType.Rotation);
             tween.Start();
             return tween;
         }
@@ -236,7 +236,7 @@ namespace Helper.Tween
         public static Tween DoLocalRotateY(this Transform target, float endValue, float duration)
         {
             Vector3 _endValue = new Vector3(target.localEulerAngles.x, endValue, target.localEulerAngles.z);
-            Tween tween = new Tween(() => target.localEulerAngles, rot => target.localEulerAngles = rot, _endValue, duration, TweenType.Vector3);
+            Tween tween = new Tween(() => target.localEulerAngles, rot => target.localEulerAngles = rot, _endValue, duration, TweenType.Rotation);
             tween.Start();
             return tween;
         }
@@ -251,7 +251,7 @@ namespace Helper.Tween
         public static Tween DoLocalRotateZ(this Transform target, float endValue, float duration)
         {
             Vector3 _endValue = new Vector3(target.localEulerAngles.x, target.localEulerAngles.y, endValue);
-            Tween tween = new Tween(() => target.localEulerAngles, rot => target.localEulerAngles = rot, _endValue, duration, TweenType.Vector3);
+            Tween tween = new Tween(() => target.localEulerAngles, rot => target.localEulerAngles = rot, _endValue, duration, TweenType.Rotation);
             tween.Start();
             return tween;
         }
