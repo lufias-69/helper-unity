@@ -361,7 +361,8 @@ namespace Helper.Tween
         public static Tween HideUp(this RectTransform target, float duration)
         {
             Vector2 offScreenPos;
-            if (target.anchorMax == Vector2.one * 0.5f && target.anchorMin == Vector2.one * 0.5f)
+            if ((target.anchorMax == Vector2.one * 0.5f && target.anchorMin == Vector2.one * 0.5f) ||
+                (target.anchorMax == Vector2.one && target.anchorMin == Vector2.zero))
             {
                 offScreenPos = new Vector2(target.anchoredPosition.x, target.GetComponentInParent<Canvas>().pixelRect.height);
             }
@@ -382,7 +383,8 @@ namespace Helper.Tween
         public static Tween HideDown(this RectTransform target, float duration)
         {
             Vector2 offScreenPos;
-            if (target.anchorMax == Vector2.one * 0.5f && target.anchorMin == Vector2.one * 0.5f)
+            if ((target.anchorMax == Vector2.one * 0.5f && target.anchorMin == Vector2.one * 0.5f) ||
+                (target.anchorMax == Vector2.one && target.anchorMin == Vector2.zero))
             {
                 offScreenPos = new Vector2(target.anchoredPosition.x, -target.GetComponentInParent<Canvas>().pixelRect.height);
             }
@@ -403,7 +405,8 @@ namespace Helper.Tween
         public static Tween HideLeft(this RectTransform target, float duration)
         {
             Vector2 offScreenPos;
-            if (target.anchorMax == Vector2.one * 0.5f && target.anchorMin == Vector2.one * 0.5f)
+            if ((target.anchorMax == Vector2.one * 0.5f && target.anchorMin == Vector2.one * 0.5f) ||
+                (target.anchorMax == Vector2.one && target.anchorMin == Vector2.zero))
             {
                 offScreenPos = new Vector2(-target.GetComponentInParent<Canvas>().pixelRect.width, target.anchoredPosition.y);
             }
@@ -424,7 +427,8 @@ namespace Helper.Tween
         public static Tween HideRight(this RectTransform target, float duration)
         {
             Vector2 offScreenPos;
-            if (target.anchorMax == Vector2.one * 0.5f && target.anchorMin == Vector2.one * 0.5f)
+            if ((target.anchorMax == Vector2.one * 0.5f && target.anchorMin == Vector2.one * 0.5f) ||
+                (target.anchorMax == Vector2.one && target.anchorMin == Vector2.zero))
             {
                 offScreenPos = new Vector2(target.GetComponentInParent<Canvas>().pixelRect.width, target.anchoredPosition.y);
             }
