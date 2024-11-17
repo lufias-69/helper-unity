@@ -1,7 +1,7 @@
 {
-    "name": "com.lufias-helper",
+    "name": "com.lufias.helper",
     "displayName": "Helper Tools",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Helper Tool is a utility designed to assist programmers by enhancing their workflow in Unity. It includes extensions for `transforms`, custom attributes like `ButtonLUFI`, `ShowIf`, `ReadOnlyLUFI`, and several editor menu options to simplify tasks like importing files and removing missing scripts from the scene.",
     "documentationUrl": "",
     "repository": {
