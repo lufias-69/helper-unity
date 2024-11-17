@@ -279,15 +279,15 @@ namespace Helper.Tween
 
         #region UI
         /// <summary>
-        /// Tween the alpha value of a CanvasRenderer to the end value over the given duration.
+        /// Tween the alpha value of a CanvasGroup to the end value over the given duration.
         /// </summary>
-        /// <param name="target">The target CanvasRenderer</param>
+        /// <param name="target">The target CanvasGroup</param>
         /// <param name="endValue">The end alpha value</param>
         /// <param name="duration">The duration of the tween</param>
         /// <returns>The tween object</returns>
-        public static Tween DoAlpha(this CanvasRenderer target, float endValue, float duration)
+        public static Tween DoAlpha(this CanvasGroup target, float endValue, float duration)
         {
-            Tween tween = new Tween(() => target.GetAlpha(), target.SetAlpha, endValue, duration);
+            Tween tween = new Tween(() => target.alpha, alpha => target.alpha = alpha, endValue, duration);
             tween.Start();
             return tween;
         }
@@ -307,16 +307,15 @@ namespace Helper.Tween
         }
 
         /// <summary>
-        /// Tween the alpha value of an Image to the end value over the given duration.
+        /// Tween the fill amount of an Image to the end value over the given duration.
         /// </summary>
         /// <param name="target">The target Image</param>
-        /// <param name="endValue">The end alpha value</param>
+        /// <param name="endValue">The end fill amount value</param>
         /// <param name="duration">The duration of the tween</param>
         /// <returns>The tween object</returns>
-        public static Tween DoFade(this Image target, float endValue, float duration)
+        public static Tween DoFillAmount(this Image target, float endValue, float duration)
         {
-            Color clr = target.color;
-            Tween tween = new Tween(() => target.color.a, alpha => { clr.a = alpha; target.color = clr; }, endValue, duration);
+            Tween tween = new Tween(() => target.fillAmount, value => target.fillAmount = value, endValue, duration);
             tween.Start();
             return tween;
         }

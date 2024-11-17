@@ -284,6 +284,7 @@ namespace Helper.Tween
         private float startValue;
         private float endValue;
         private float duration;
+        private float delay;
         private Action<float> onUpdate;
         private Action onComplete;
 
@@ -293,6 +294,7 @@ namespace Helper.Tween
             this.endValue = end;
             this.duration = duration;
             this.onUpdate = onUpdate;
+            delay = 0;
         }
 
         /// <summary>
@@ -311,10 +313,25 @@ namespace Helper.Tween
             TweenRunner.Instance.StartCoroutine(Execute());
         }
 
+        /// <summary>
+        /// Sets the delay before the tween starts.
+        /// </summary>
+        /// <param name="delay">The delay in seconds.</param>
+        /// <returns>The current Tween instance.</returns>
+        public VirtualTween SetDelay(float delay)
+        {
+            this.delay = delay;
+            return this;
+        }
+
         private IEnumerator Execute()
         {
-            float time = 0f;
+            yield return new WaitForEndOfFrame();
 
+            if (delay > 0f) yield return new WaitForSeconds(delay);
+
+
+            float time = 0f;
             while (time < duration)
             {
                 time += Time.deltaTime;
