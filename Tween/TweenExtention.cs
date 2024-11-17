@@ -278,6 +278,7 @@ namespace Helper.Tween
         #endregion
 
         #region UI
+        #region Other
         /// <summary>
         /// Tween the alpha value of a CanvasGroup to the end value over the given duration.
         /// </summary>
@@ -334,6 +335,7 @@ namespace Helper.Tween
             tween.Start();
             return tween;
         }
+        #endregion
 
         #region Rect Transform
         /// <summary>
@@ -358,11 +360,18 @@ namespace Helper.Tween
         /// <returns>The tween object</returns>
         public static Tween HideUp(this RectTransform target, float duration)
         {
-            Vector2 offScreenPos = new Vector2(target.anchoredPosition.x, target.sizeDelta.y);
+            Vector2 offScreenPos;
+            if (target.anchorMax == Vector2.one * 0.5f && target.anchorMin == Vector2.one * 0.5f)
+            {
+                offScreenPos = new Vector2(target.anchoredPosition.x, target.GetComponentInParent<Canvas>().pixelRect.height);
+            }
+            else offScreenPos = new Vector2(target.anchoredPosition.x, target.sizeDelta.y);
+
             Tween tween = new Tween(() => target.anchoredPosition, pos => target.anchoredPosition = pos, offScreenPos, duration);
             tween.Start();
             return tween;
         }
+
 
         /// <summary>
         /// Tween the anchored position of a RectTransform to be off-screen downwards over the given duration.
@@ -372,11 +381,18 @@ namespace Helper.Tween
         /// <returns>The tween object</returns>
         public static Tween HideDown(this RectTransform target, float duration)
         {
-            Vector2 offScreenPos = new Vector2(target.anchoredPosition.x, -target.sizeDelta.y);
+            Vector2 offScreenPos;
+            if (target.anchorMax == Vector2.one * 0.5f && target.anchorMin == Vector2.one * 0.5f)
+            {
+                offScreenPos = new Vector2(target.anchoredPosition.x, -target.GetComponentInParent<Canvas>().pixelRect.height);
+            }
+            else offScreenPos = new Vector2(target.anchoredPosition.x, -target.sizeDelta.y);
+
             Tween tween = new Tween(() => target.anchoredPosition, pos => target.anchoredPosition = pos, offScreenPos, duration);
             tween.Start();
             return tween;
         }
+
 
         /// <summary>
         /// Tween the anchored position of a RectTransform to be off-screen to the left over the given duration.
@@ -386,11 +402,18 @@ namespace Helper.Tween
         /// <returns>The tween object</returns>
         public static Tween HideLeft(this RectTransform target, float duration)
         {
-            Vector2 offScreenPos = new Vector2(-target.sizeDelta.x, target.anchoredPosition.y);
+            Vector2 offScreenPos;
+            if (target.anchorMax == Vector2.one * 0.5f && target.anchorMin == Vector2.one * 0.5f)
+            {
+                offScreenPos = new Vector2(-target.GetComponentInParent<Canvas>().pixelRect.width, target.anchoredPosition.y);
+            }
+            else offScreenPos = new Vector2(-target.sizeDelta.x, target.anchoredPosition.y);
+
             Tween tween = new Tween(() => target.anchoredPosition, pos => target.anchoredPosition = pos, offScreenPos, duration);
             tween.Start();
             return tween;
         }
+
 
         /// <summary>
         /// Tween the anchored position of a RectTransform to be off-screen to the right over the given duration.
@@ -400,11 +423,18 @@ namespace Helper.Tween
         /// <returns>The tween object</returns>
         public static Tween HideRight(this RectTransform target, float duration)
         {
-            Vector2 offScreenPos = new Vector2(target.sizeDelta.x, target.anchoredPosition.y);
+            Vector2 offScreenPos;
+            if (target.anchorMax == Vector2.one * 0.5f && target.anchorMin == Vector2.one * 0.5f)
+            {
+                offScreenPos = new Vector2(target.GetComponentInParent<Canvas>().pixelRect.width, target.anchoredPosition.y);
+            }
+            else offScreenPos = new Vector2(target.sizeDelta.x, target.anchoredPosition.y);
+
             Tween tween = new Tween(() => target.anchoredPosition, pos => target.anchoredPosition = pos, offScreenPos, duration);
             tween.Start();
             return tween;
         }
+
 
         /// <summary>
         /// Tween the anchored position of a RectTransform to be on-screen over the given duration.
