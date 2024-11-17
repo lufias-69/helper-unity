@@ -320,6 +320,21 @@ namespace Helper.Tween
             return tween;
         }
 
+        /// <summary>
+        /// Tween the alpha value of an Image to the end value over the given duration.
+        /// </summary>
+        /// <param name="target">The target Image</param>
+        /// <param name="endValue">The end alpha value</param>
+        /// <param name="duration">The duration of the tween</param>
+        /// <returns>The tween object</returns>
+        public static Tween DoFade(this Image target, float endValue, float duration)
+        {
+            Color clr = target.color;
+            Tween tween = new Tween(() => target.color.a, alpha => { clr.a = alpha; target.color = clr; }, endValue, duration);
+            tween.Start();
+            return tween;
+        }
+
         #region Rect Transform
         /// <summary>
         /// Tween the anchored position of a RectTransform to the end value over the given duration.
