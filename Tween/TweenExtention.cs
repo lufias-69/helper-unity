@@ -459,6 +459,22 @@ namespace Helper.Tween
             return tween;
         }
         #endregion
+
+        #region Audio
+        /// <summary>
+        /// Tween the volume of an AudioSource to the end value over the given duration.
+        /// </summary>
+        /// <param name="target">The target AudioSource</param>
+        /// <param name="volume">The end volume value</param>
+        /// <param name="duration">The duration of the tween</param>
+        /// <returns>The tween object</returns>
+        public static Tween DoFade(this AudioSource target, float volume, float duration)
+        {
+            Tween tween = new Tween(() => target.volume, vol => target.volume = vol, volume, duration);
+            tween.Start();
+            return tween;
+        }
+        #endregion
     }
 
 }
