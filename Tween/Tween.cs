@@ -181,7 +181,16 @@ namespace Helper.Tween
             {
                 time += Time.deltaTime;
                 t = Mathf.Clamp01(time / duration);
-                easedT = easeFunction(t);
+
+                try
+                {
+                    easedT = easeFunction(t);
+                }
+                catch (Exception)
+                {
+                    yield break;
+                }
+
 
                 try
                 {
@@ -414,7 +423,15 @@ namespace Helper.Tween
             {
                 time += Time.deltaTime;
                 t = Mathf.Clamp01(time / duration);
-                easedT = easeFunction(t);
+
+                try
+                {
+                    easedT = easeFunction(t);
+                }
+                catch (Exception)
+                {
+                    yield break;
+                }
 
                 offset = (1 - t) * Mathf.Sin(t * Mathf.PI) * size * Vector2.one;
 
@@ -422,8 +439,11 @@ namespace Helper.Tween
                 {
                     setValue(startValue + offset);
                 }
-                catch (Exception) { }
-                
+                catch (Exception)
+                {
+                    yield break;
+                }
+
                 yield return null;
             }
 
