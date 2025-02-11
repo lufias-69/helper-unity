@@ -31,7 +31,7 @@ namespace Helper.Pool
             parent = new GameObject(itemName).transform;
 
             prefabList = new T[amount];
-            
+
             for (int i = 0; i < amount; i++)
             {
                 T g = Object.Instantiate(prefab);
@@ -86,10 +86,16 @@ namespace Helper.Pool
         /// <returns></returns>
         public T GetItem(bool isActive)
         {
-            T item = GetItem();            
+            T item = GetItem();
             item.gameObject.SetActive(isActive);
             return item;
         }
+
+        /// <summary>
+        /// Returns all the items in the pool
+        /// </summary>
+        /// <returns></returns>
+        public T[] GetAll() => prefabList;
     }
 }
 
@@ -125,4 +131,3 @@ public class Demo : MonoBehaviour
 }
 */
 #endregion
-
