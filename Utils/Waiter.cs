@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System;
 using UnityEngine;
 
@@ -14,7 +14,6 @@ namespace Helper.Waiter
         public static Coroutine Wait(int frameToWait, Action action)
         {
             return StaticCoroutine.StartCoroutine(ExecuteWait(frameToWait, action));
-
         }
 
         public static Coroutine WaitEndOffFrame(int frameToWait, Action action)
@@ -26,7 +25,12 @@ namespace Helper.Waiter
         static IEnumerator ExecuteWaitSecond(float secondToWait, Action action)
         {
             yield return new WaitForSecondsRealtime(secondToWait);
-            action?.Invoke();
+
+            try
+            {
+                action?.Invoke();
+            }
+            catch (Exception) { }
         }
 
         static IEnumerator ExecuteWait(int frameToWait, Action action)
@@ -35,7 +39,12 @@ namespace Helper.Waiter
             {
                 yield return null;
             }
-            action?.Invoke();
+
+            try
+            {
+                action?.Invoke();
+            }
+            catch (Exception) { }
         }
 
         static IEnumerator ExecuteWaitEndOffFrame(int frameToWait, Action action)
@@ -44,7 +53,12 @@ namespace Helper.Waiter
             {
                 yield return new WaitForEndOfFrame();
             }
-            action?.Invoke();
+
+            try
+            {
+                action?.Invoke();
+            }
+            catch (Exception) { }
         }
 
     }
