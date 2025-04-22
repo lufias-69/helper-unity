@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Helper.Web.Picture
 {
-    public class PictureDownloader : MonoBehaviour
+    public class PictureDownloader
     {
         private readonly string url;
         private Action<Sprite> onComplete;
@@ -38,7 +38,7 @@ namespace Helper.Web.Picture
                 if (webRequest.result == UnityWebRequest.Result.ConnectionError ||
                     webRequest.result == UnityWebRequest.Result.ProtocolError)
                 {
-                    
+                    Debug.LogError($"Error downloading image: {webRequest.error}");
                 }
                 else
                 {
