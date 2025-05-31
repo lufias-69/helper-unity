@@ -25,8 +25,13 @@ public class TweenHelperButton : MonoBehaviour
             0.25f,
             size
         );
-
-        tween.OnComplete(() => OnClick?.Invoke());
+    
+        tween.OnComplete(() =>
+        {
+            // Reset scale to original size
+            rectTransform.localScale = Vector3.one;
+            OnClick?.Invoke();
+        });
         tween.Start();
     }
 
