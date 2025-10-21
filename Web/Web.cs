@@ -1,3 +1,4 @@
+#if ENABLE_UNITYWEBREQUEST // Requires this symbol to be defined in Player Settings for compilation
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,10 +15,10 @@ namespace Helper.Web
     public class Web
     {
         private readonly string baseUrl;
-
+        
         // New field to hold raw POST data (e.g., JSON string)
-        private string postPayload;
-
+        private string postPayload; 
+        
         // Fields for fluent configuration
         private Dictionary<string, string> queryParams = new Dictionary<string, string>();
         private string bearerToken = string.Empty;
@@ -26,12 +27,12 @@ namespace Helper.Web
         private Action<string> onCompleteCallback;
         private Action<byte[]> onCompleteCallbackRaw;
         private Action<string> onErrorCallback;
-
+        
         // Execution state management
         private bool isExecuting = false;
         delegate void RequestDelegate();
         RequestDelegate m_RequestFunction;
-
+        
         protected static UnityWebRequest webRequest;
 
         protected Web() { }
@@ -77,15 +78,22 @@ namespace Helper.Web
 
         /// <summary>
         /// Adds a single query parameter to the URL for GET requests.
+        /// Allows passing of object values (e.g., int, bool) which are converted to string.
         /// </summary>
         /// <param name="key">The parameter key.</param>
-        /// <param name="value">The parameter value.</param>
+        /// <param name="value">The parameter value (will be converted to string).</param>
         /// <returns>The current instance of the Web class for chaining methods.</returns>
-        public Web WithParam(string key, string value)
+        public Web WithParam(string key, object value)
         {
             if (m_RequestFunction == Get)
             {
-                queryParams[key] = value;
+                // Convert object to string. Null values are handled by the null-conditional operator.
+                string stringValue = value?.ToString();
+
+                if (!string.IsNullOrEmpty(stringValue) && !string.IsNullOrEmpty(key))
+                {
+                    queryParams[key] = stringValue;
+                }
             }
             else
             {
@@ -199,12 +207,12 @@ namespace Helper.Web
                 onCompleteCallback?.Invoke(webRequest.downloadHandler.text);
                 onCompleteCallbackRaw?.Invoke(webRequest.downloadHandler.data);
             }
-
+            
             // Dispose of the request after processing
             webRequest.Dispose();
             webRequest = null;
         }
-
+        
         // --- REQUEST EXECUTION METHODS ---
 
         private void ApplyHeaders()
@@ -252,7 +260,7 @@ namespace Helper.Web
         private void Post()
         {
             isExecuting = true;
-
+            
             // 1. Create a custom POST request
             webRequest = new UnityWebRequest(baseUrl, UnityWebRequest.kHttpVerbPOST);
 
@@ -263,9 +271,9 @@ namespace Helper.Web
                 byte[] bodyRaw = Encoding.UTF8.GetBytes(postPayload);
                 webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
                 // Set Content-Type header explicitly for raw payload (e.g., JSON)
-                webRequest.SetRequestHeader("Content-Type", "application/json");
+                webRequest.SetRequestHeader("Content-Type", "application/json"); 
             }
-
+            
             // Must manually set the download handler for response data
             webRequest.downloadHandler = new DownloadHandlerBuffer();
 
@@ -280,3 +288,4 @@ namespace Helper.Web
         }
     }
 }
+#endif // ENABLE_UNITYWEBREQUEST
