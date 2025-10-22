@@ -1,4 +1,3 @@
-#if ENABLE_UNITYWEBREQUEST // Requires this symbol to be defined in Player Settings for compilation
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,11 +13,12 @@ namespace Helper.Web
     /// </summary>
     public class Web
     {
+        bool showLog = false;
         private readonly string baseUrl;
-        
+
         // New field to hold raw POST data (e.g., JSON string)
-        private string postPayload; 
-        
+        private string postPayload;
+
         // Fields for fluent configuration
         private Dictionary<string, string> queryParams = new Dictionary<string, string>();
         private string bearerToken = string.Empty;
@@ -27,12 +27,12 @@ namespace Helper.Web
         private Action<string> onCompleteCallback;
         private Action<byte[]> onCompleteCallbackRaw;
         private Action<string> onErrorCallback;
-        
+
         // Execution state management
         private bool isExecuting = false;
         delegate void RequestDelegate();
         RequestDelegate m_RequestFunction;
-        
+
         protected static UnityWebRequest webRequest;
 
         protected Web() { }
@@ -207,20 +207,26 @@ namespace Helper.Web
                 onCompleteCallback?.Invoke(webRequest.downloadHandler.text);
                 onCompleteCallbackRaw?.Invoke(webRequest.downloadHandler.data);
             }
-            
+
             // Dispose of the request after processing
             webRequest.Dispose();
             webRequest = null;
         }
-        
+
         // --- REQUEST EXECUTION METHODS ---
 
+        /// <summary>
+        /// Applies standard headers like Authorization.
+        /// </summary>
         private void ApplyHeaders()
         {
             // Apply Bearer Token Header
             if (!string.IsNullOrEmpty(bearerToken))
             {
-                webRequest.SetRequestHeader("Authorization", $"Bearer {bearerToken}");
+                string headerValue = $"Bearer {bearerToken}";
+                webRequest.SetRequestHeader("Authorization", headerValue);
+                // LOGGING: Authorization header
+                if (showLog) Debug.Log($"[Web Debug] Header Added: Authorization: {headerValue}");
             }
         }
 
@@ -245,9 +251,12 @@ namespace Helper.Web
                 finalUrl += sb.ToString();
             }
 
+            // LOGGING: Final GET URL
+            if (showLog) Debug.Log($"[Web Debug] Sending GET Request to: {finalUrl}");
+
             webRequest = UnityWebRequest.Get(finalUrl);
 
-            // 2. Apply Headers
+            // 2. Apply Headers (logging inside ApplyHeaders)
             ApplyHeaders();
 
             // Send the request asynchronously
@@ -260,9 +269,12 @@ namespace Helper.Web
         private void Post()
         {
             isExecuting = true;
-            
+
             // 1. Create a custom POST request
             webRequest = new UnityWebRequest(baseUrl, UnityWebRequest.kHttpVerbPOST);
+
+            // LOGGING: POST URL
+            if (showLog) Debug.Log($"[Web Debug] Sending POST Request to: {baseUrl}");
 
             // 2. Attach payload if available
             if (!string.IsNullOrEmpty(postPayload))
@@ -271,13 +283,17 @@ namespace Helper.Web
                 byte[] bodyRaw = Encoding.UTF8.GetBytes(postPayload);
                 webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
                 // Set Content-Type header explicitly for raw payload (e.g., JSON)
-                webRequest.SetRequestHeader("Content-Type", "application/json"); 
+                webRequest.SetRequestHeader("Content-Type", "application/json");
+
+                // LOGGING: Content-Type and Payload
+                if (showLog) Debug.Log($"[Web Debug] POST Header Added: Content-Type: application/json");
+                if (showLog) Debug.Log($"[Web Debug] POST Payload: {postPayload}");
             }
-            
+
             // Must manually set the download handler for response data
             webRequest.downloadHandler = new DownloadHandlerBuffer();
 
-            // 3. Apply Headers (includes Bearer token)
+            // 3. Apply Headers (logging inside ApplyHeaders)
             ApplyHeaders();
 
             // Send the request asynchronously
@@ -288,4 +304,3 @@ namespace Helper.Web
         }
     }
 }
-#endif // ENABLE_UNITYWEBREQUEST
