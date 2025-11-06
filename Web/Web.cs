@@ -13,81 +13,64 @@ namespace Helper.Web
     /// </summary>
     public class Web
     {
-        bool showLog = false;
-        private readonly string baseUrl;
+        // Shared logging state across all Web instances
+        private static bool showLog = false;
 
-        // New field to hold raw POST data (e.g., JSON string)
+        private readonly string baseUrl;
         private string postPayload;
 
-        // Fields for fluent configuration
         private Dictionary<string, string> queryParams = new Dictionary<string, string>();
         private string bearerToken = string.Empty;
 
-        // Callback fields
         private Action<string> onCompleteCallback;
         private Action<byte[]> onCompleteCallbackRaw;
         private Action<string> onErrorCallback;
 
-        // Execution state management
         private bool isExecuting = false;
-        delegate void RequestDelegate();
-        RequestDelegate m_RequestFunction;
+        private delegate void RequestDelegate();
+        private RequestDelegate m_RequestFunction;
 
-        protected static UnityWebRequest webRequest;
+        private UnityWebRequest webRequest;
 
         protected Web() { }
 
         protected Web(string url)
         {
-            this.baseUrl = url;
+            baseUrl = url;
             m_RequestFunction = Get;
         }
 
-        // Updated private constructor to accept raw string payload instead of WWWForm
         private Web(string url, string postPayload)
         {
-            this.baseUrl = url;
+            baseUrl = url;
             this.postPayload = postPayload;
             m_RequestFunction = Post;
         }
 
-
         /// <summary>
-        /// Initiates a web request with the specified URL.
+        /// Globally toggles request debug logging for all Web instances.
         /// </summary>
-        /// <param name="url">The base URL for the web request.</param>
-        /// <returns>An instance of the Web class for chaining methods.</returns>
+        /// <param name="state">True to enable logs, false to disable.</param>
+        public static void ToggleLog(bool state)
+        {
+            showLog = state;
+            Debug.Log($"[Web Debug] Global logging set to: {state}");
+        }
+
         public static Web GetData(string url)
         {
             return new Web(url);
         }
 
-        /// <summary>
-        /// Creates a new Web instance for making a POST request.
-        /// </summary>
-        /// <param name="url">The URL to send the POST request to.</param>
-        /// <param name="postPayload">The raw string data (e.g., JSON payload) to include in the POST request (optional).</param>
-        /// <returns>The Web instance.</returns>
-        // Updated factory method to accept raw string payload instead of WWWForm
         public static Web PostData(string url, string postPayload = null)
         {
             return new Web(url, postPayload);
         }
 
-        // --- FLUENT CHAINING METHODS ---
-
-        /// <summary>
-        /// Adds a single query parameter to the URL for GET requests.
-        /// Allows passing of object values (e.g., int, bool) which are converted to string.
-        /// </summary>
-        /// <param name="key">The parameter key.</param>
-        /// <param name="value">The parameter value (will be converted to string).</param>
-        /// <returns>The current instance of the Web class for chaining methods.</returns>
         public Web WithParam(string key, object value)
         {
             if (m_RequestFunction == Get)
             {
-                // Convert object to string. Null values are handled by the null-conditional operator.
                 string stringValue = value?.ToString();
 
                 if (!string.IsNullOrEmpty(stringValue) && !string.IsNullOrEmpty(key))
@@ -102,19 +85,12 @@ namespace Helper.Web
             return this;
         }
 
-        /// <summary>
-        /// Adds multiple query parameters to the URL for GET requests.
-        /// Allows passing of object values (e.g., int, bool) which are converted to string.
-        /// </summary>
-        /// <param name="parameters">A dictionary of key (string) and value (object) query parameters.</param>
-        /// <returns>The current instance of the Web class for chaining methods.</returns>
         public Web WithParam(Dictionary<string, object> parameters)
         {
             if (m_RequestFunction == Get && parameters != null)
             {
                 foreach (var kvp in parameters)
                 {
-                    // Convert object to string. Null values are handled by the null-conditional operator.
                     string stringValue = kvp.Value?.ToString();
 
                     if (!string.IsNullOrEmpty(stringValue) && !string.IsNullOrEmpty(kvp.Key))
@@ -125,16 +101,11 @@ namespace Helper.Web
             }
             else if (m_RequestFunction != Get)
             {
-                Debug.LogWarning("WithParam (Dictionary) is typically ignored or only used for GET requests.");
+                Debug.LogWarning("WithParam (Dictionary) is typically ignored for POST requests.");
             }
             return this;
         }
 
-        /// <summary>
-        /// Adds an Authorization Bearer token header to the request.
-        /// </summary>
-        /// <param name="token">The Bearer token string.</param>
-        /// <returns>The current instance of the Web class for chaining methods.</returns>
         public Web WithBearer(string token)
         {
             if (!string.IsNullOrEmpty(token))
@@ -144,13 +115,6 @@ namespace Helper.Web
             return this;
         }
 
-        // --- CALLBACK METHODS (Execution triggers here if not already running) ---
-
-        /// <summary>
-        /// Sets a callback to be executed when the web request is completed successfully.
-        /// </summary>
-        /// <param name="callback">The callback function to execute with the raw JSON string.</param>
-        /// <returns>The current instance of the Web class for chaining methods.</returns>
         public Web OnComplete(Action<string> callback)
         {
             onCompleteCallback = callback;
@@ -158,11 +122,6 @@ namespace Helper.Web
             return this;
         }
 
-        /// <summary>
-        /// Sets a callback to be executed when the web request is completed successfully.
-        /// </summary>
-        /// <param name="callback">The callback function to execute with the downloaded byte[].</param>
-        /// <returns>The current instance of the Web class for chaining methods.</returns>
         public Web OnCompleteRaw(Action<byte[]> callback)
         {
             onCompleteCallbackRaw = callback;
@@ -170,20 +129,12 @@ namespace Helper.Web
             return this;
         }
 
-
-        /// <summary>
-        /// Sets a callback to be executed when the web request encounters an error.
-        /// </summary>
-        /// <param name="callback">The callback function to execute with the error message.</param>
-        /// <returns>The current instance of the Web class for chaining methods.</returns>
         public Web OnError(Action<string> callback)
         {
             onErrorCallback = callback;
             if (!isExecuting) m_RequestFunction();
             return this;
         }
-
-        // --- UTILITY ---
 
         public int GetDownloadProgress()
         {
@@ -193,10 +144,8 @@ namespace Helper.Web
 
         private void Result()
         {
-            // Reset execution flag after completion
             isExecuting = false;
 
-            // Check for errors (deprecated isError for Result)
             if (webRequest.result == UnityWebRequest.Result.ConnectionError ||
                 webRequest.result == UnityWebRequest.Result.ProtocolError)
             {
@@ -208,24 +157,16 @@ namespace Helper.Web
                 onCompleteCallbackRaw?.Invoke(webRequest.downloadHandler.data);
             }
 
-            // Dispose of the request after processing
             webRequest.Dispose();
             webRequest = null;
         }
 
-        // --- REQUEST EXECUTION METHODS ---
-
-        /// <summary>
-        /// Applies standard headers like Authorization.
-        /// </summary>
         private void ApplyHeaders()
         {
-            // Apply Bearer Token Header
             if (!string.IsNullOrEmpty(bearerToken))
             {
                 string headerValue = $"Bearer {bearerToken}";
                 webRequest.SetRequestHeader("Authorization", headerValue);
-                // LOGGING: Authorization header
                 if (showLog) Debug.Log($"[Web Debug] Header Added: Authorization: {headerValue}");
             }
         }
@@ -235,7 +176,6 @@ namespace Helper.Web
             isExecuting = true;
             string finalUrl = baseUrl;
 
-            // 1. Build URL with Query Params
             if (queryParams.Count > 0)
             {
                 var sb = new StringBuilder();
@@ -251,56 +191,38 @@ namespace Helper.Web
                 finalUrl += sb.ToString();
             }
 
-            // LOGGING: Final GET URL
             if (showLog) Debug.Log($"[Web Debug] Sending GET Request to: {finalUrl}");
 
             webRequest = UnityWebRequest.Get(finalUrl);
-
-            // 2. Apply Headers (logging inside ApplyHeaders)
             ApplyHeaders();
 
-            // Send the request asynchronously
-            webRequest.SendWebRequest().completed += operation =>
-            {
-                Result();
-            };
+            webRequest.SendWebRequest().completed += operation => { Result(); };
         }
 
         private void Post()
         {
             isExecuting = true;
 
-            // 1. Create a custom POST request
             webRequest = new UnityWebRequest(baseUrl, UnityWebRequest.kHttpVerbPOST);
-
-            // LOGGING: POST URL
             if (showLog) Debug.Log($"[Web Debug] Sending POST Request to: {baseUrl}");
 
-            // 2. Attach payload if available
             if (!string.IsNullOrEmpty(postPayload))
             {
-                // Convert string payload (assuming JSON) to bytes
                 byte[] bodyRaw = Encoding.UTF8.GetBytes(postPayload);
                 webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
-                // Set Content-Type header explicitly for raw payload (e.g., JSON)
                 webRequest.SetRequestHeader("Content-Type", "application/json");
 
-                // LOGGING: Content-Type and Payload
-                if (showLog) Debug.Log($"[Web Debug] POST Header Added: Content-Type: application/json");
-                if (showLog) Debug.Log($"[Web Debug] POST Payload: {postPayload}");
+                if (showLog)
+                {
+                    Debug.Log($"[Web Debug] POST Header Added: Content-Type: application/json");
+                    Debug.Log($"[Web Debug] POST Payload: {postPayload}");
+                }
             }
 
-            // Must manually set the download handler for response data
             webRequest.downloadHandler = new DownloadHandlerBuffer();
-
-            // 3. Apply Headers (logging inside ApplyHeaders)
             ApplyHeaders();
 
-            // Send the request asynchronously
-            webRequest.SendWebRequest().completed += operation =>
-            {
-                Result();
-            };
+            webRequest.SendWebRequest().completed += operation => { Result(); };
         }
     }
 }
