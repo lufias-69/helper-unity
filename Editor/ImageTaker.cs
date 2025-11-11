@@ -126,8 +126,9 @@ public class ImageTaker : MonoBehaviour
         string fullPath = Path.Combine(dir, filename);
         File.WriteAllBytes(fullPath, bytes);
 
-        Debug.Log("Image saved to: " + fullPath);
+        Debug.Log($"{width}x{height} Image saved to: " + fullPath);
         AssetDatabase.Refresh();
     }
 }
 #endif
+
