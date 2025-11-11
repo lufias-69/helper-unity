@@ -1,20 +1,35 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using Helper.Waiter;
 
 public class ImageTaker : MonoBehaviour
 {
     [Header("Capture Settings")]
+    public Camera cam;
     public bool transparentBackground = false;
     public bool captureUI = true;
     public string folderPath = "Captures";
+    public float delayBeforeCapture = 0f;
+
 
     static ImageTaker pendingCapture;
     static bool capturePending;
 
     [ButtonLUFI]
-    public void CaptureWithPlayModeCheck()
+    public void CaptureWithDelay()
+    {
+        if (!EditorApplication.isPlaying)
+        {
+            Debug.LogWarning("CaptureWithDelay can only be used in Play Mode.");
+            return;
+        }
+        Waiter.Wait(delayBeforeCapture, CaptureInstantly);
+    }
+
+    [ButtonLUFI]
+    public void CaptureInstantly()
     {
         if (EditorApplication.isPlaying)
         {
@@ -60,15 +75,17 @@ public class ImageTaker : MonoBehaviour
 
     public void CaptureAndSave()
     {
-        Camera cam = Camera.main;
+        if (cam == null) cam = Camera.main;
         if (cam == null)
         {
             Debug.LogError("Capture failed: Camera component not found.");
             return;
         }
 
-        int width = Screen.width;
-        int height = Screen.height;
+        Vector2Int size = GameViewSizeHelper.GetMainGameViewSize();
+        int width = size.x;
+        int height = size.y;
+
 
         CameraClearFlags originalFlags = cam.clearFlags;
         Color originalColor = cam.backgroundColor;
@@ -130,5 +147,19 @@ public class ImageTaker : MonoBehaviour
         AssetDatabase.Refresh();
     }
 }
-#endif
 
+static class GameViewSizeHelper
+{
+    public static Vector2Int GetMainGameViewSize()
+    {
+        var gameView = typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView");
+        var gameViewWindow = EditorWindow.GetWindow(gameView);
+        var prop = gameView.GetProperty("currentGameViewSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var sizeObj = prop.GetValue(gameViewWindow, null);
+        var sizeType = sizeObj.GetType();
+        int width = (int)sizeType.GetProperty("width").GetValue(sizeObj, null);
+        int height = (int)sizeType.GetProperty("height").GetValue(sizeObj, null);
+        return new Vector2Int(width, height);
+    }
+}
+#endif
