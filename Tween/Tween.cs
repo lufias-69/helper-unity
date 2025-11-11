@@ -421,7 +421,7 @@ namespace Helper.Tween
 
             while (time < duration)
             {
-                time += Time.deltaTime;
+                time += Time.unscaledDeltaTime;
                 t = Mathf.Clamp01(time / duration);
 
                 try
